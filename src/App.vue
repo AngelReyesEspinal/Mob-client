@@ -1,29 +1,60 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <sui-dimmer :active="isLoading">
+      <sui-loader size="massive"> Espere un momento </sui-loader>
+    </sui-dimmer>
+    <router-view class="full-width"></router-view>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
 
 @Component({
   components: {
-    HelloWorld,
-  },
+  }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+
+  get isLoading () {
+    return this.$store.state.loading;
+  }
+}
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .flex {
+    display: flex;
+  }
+
+  .end {
+    justify-content: flex-end;
+  }
+
+  #app {
+    display: flex;
+    padding: 4%;
+    color: white;
+    background-color: #131417 !important;
+    min-height: 100vh;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  // inputs
+
+  .input-custom-width {
+    width: 100%;
+  }
+
+  input {
+    color: white!important;
+  }
+
+  .big-big input {
+    height: 100px;
+    font-size: 60px;
+  }
 </style>

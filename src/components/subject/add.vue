@@ -55,6 +55,7 @@ export default class Add extends BaseVue {
     this.$store.commit("setLoading", false)
     this.operationSuccess();
     this.$emit('changeComponent', 'base-component');
+    data  = new FormData()
   }
 
   getFormData(): FormData {

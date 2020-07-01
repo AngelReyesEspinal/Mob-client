@@ -26,7 +26,7 @@
     </h1> 
 
     <!-- MODULES -->
-    <div class="module-wrapper-margin">
+    <div>
       <subject-module class="animate__animated animate__fadeInLeftBig"/>
     </div>
 

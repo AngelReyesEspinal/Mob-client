@@ -20,6 +20,10 @@ export default class BaseRepository {
         return this.axios.get(`${this.apiUrl}/userId/${id}`)
     }
 
+    delete(id: number) {
+        return this.axios.delete(`${this.apiUrl}/${id}`)
+    }
+
     /* Subject custom request */
 
     post_with_files(data: any) {

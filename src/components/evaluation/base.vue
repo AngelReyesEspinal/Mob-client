@@ -11,7 +11,14 @@
     </div>
     <br/>
 
-    <main>
+    <div class="box effect5 flex" style="">
+      <div>
+        <span style="color: black"> klk</span>
+      </div>
+    </div>
+
+
+    <!-- <main>
       <article  v-for="subject in subjects" :key="subject.id" class="postcard blue">
         <img class="postcard__img" :src="subject.logo" height="215" alt="Image Title" />
         <div class="postcard__text">
@@ -41,7 +48,7 @@
 
         </div>
       </article>
-    </main>
+    </main> -->
     
   </div>
 </template>
@@ -73,7 +80,7 @@ export default class Base extends BaseVue {
   }
 
   manage_evaluations(id: number) {
-    this.$emit('changeParentComponent', {component: 'evaluation-module', id: id})
+    alert(id);
   }
 
   edit(id: number) {

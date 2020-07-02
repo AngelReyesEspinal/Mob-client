@@ -8,7 +8,6 @@
       <component 
         v-bind:is="component" 
         @changeComponent="manage_component"
-        @changeParentComponent="manage_module"
         :id="id"></component>
     </transition>
   </div>
@@ -16,9 +15,9 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator'
-import Add from '../components/subject/add.vue'
-import Base from '../components/subject/base.vue'
-import Edit from '../components/subject/edit.vue'
+import Add from '../components/evaluation/add.vue'
+import Base from '../components/evaluation/base.vue'
+import Edit from '../components/evaluation/edit.vue'
 @Component({
   components: {
     'add-component' : Add,
@@ -33,10 +32,6 @@ export default class Subject extends Vue {
   manage_component(data: any) {
     this.component = data.component
     this.id = data.id
-  }
-
-  manage_module(data: any) {
-    this.$emit('changeComponent', data)
   }
 }
 </script>

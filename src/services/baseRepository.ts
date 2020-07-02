@@ -26,7 +26,15 @@ export default class BaseRepository {
 
     /* Subject custom request */
 
-    post_with_files(data: any) {
-        return this.axios.post(`${this.apiUrl}/upload`, data)
+    addSubject(data: any) {
+        return this.axios.post(`${this.apiUrl}/subject`, data)
+    }
+
+    editSubject(data: any) {
+        return this.axios.post(`${this.apiUrl}/updateSubject`, data)
+    }
+
+    getSubjectById(id: number) {
+        return this.axios.get(`${this.apiUrl}/GetById/${id}`)
     }
 }

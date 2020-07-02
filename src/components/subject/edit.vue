@@ -2,24 +2,32 @@
   <div>
     <form enctype="multipart/form-data" class="flex form">
       <div>
-        <sui-input
-          :error="!isValid"
-          class="input-custom-width big-big"
-          size="massive"
-          placeholder="Nombre del área..."
-          transparent
-          v-model="subjectName"
-        />
+        <template v-if="this.model">
+            <sui-input
+                :error="!isValid"
+                class="input-custom-width big-big"
+                size="massive"
+                placeholder="Nombre del área..."
+                transparent
+                name="name"
+                v-model="model.name"
+            />
+        </template>
       </div>
       <div>
         <label for="file" id="selector">
-          {{ file ? file.name : 'Selecciona una imagen'}}
+            <template v-if="this.model">
+                {{ file ? file.name : this.model.fileName}}
+            </template>
+            <template v-else>
+                Cargando...
+            </template>
         </label>
         <input type="file" id="file" @change="processFile($event)" hidden/>
       </div>
       <div class="flex end">
-        <sui-button size="massive" basic color="grey" inverted @click=" () => { this.$emit('changeComponent', { component: 'base-component', id: 0 }) } "> REGRESAR </sui-button>
-        <sui-button size="massive" basic color="teal" inverted type="submit" @click="send"> AGREGAR </sui-button>
+        <sui-button size="massive" basic color="grey" inverted @click=" () => { this.$emit('changeComponent', {component: 'base-component', id: 0}) } "> REGRESAR </sui-button>
+        <sui-button size="massive" basic color="teal" inverted type="submit" @click="send"> EDITAR </sui-button>
       </div>
     </form>
   </div>
@@ -28,15 +36,32 @@
 <script lang='ts'>
 let data = new FormData;
 
-import { Component } from "vue-property-decorator"
+import { Component, Prop } from "vue-property-decorator"
 import BaseRepository from '../../services/baseRepository'
 import BaseVue from "../../services/BaseVue.vue"
+import Subject from "../../models/subject.model";
 
 @Component({})
-export default class Add extends BaseVue {
+export default class Edit extends BaseVue {
+  @Prop({ default: 0}) id: number;
   repository: BaseRepository = new BaseRepository("Subject")
   subjectName: string = ''
   file: any = null
+  model: Subject = null
+  open: boolean = false
+
+  toggle() {
+    this.open = !this.open;
+  }
+
+  async mounted() {
+    this.repository.getSubjectById(this.id).then((response: any) => {
+        if (response) {
+            this.model = response.data as Subject
+            this.subjectName = this.model.name
+        }
+    });
+  }
 
   processFile(event: any) {
     this.file = event.target.files[0]
@@ -47,15 +72,16 @@ export default class Add extends BaseVue {
     myEvent.preventDefault()
     let subject = this.getFormData()
     this.$store.commit("setLoading", true)
-    await this.repository.addSubject(subject)
+    await this.repository.editSubject(subject)
     this.$store.commit("setLoading", false)
     this.operationSuccess();
-    this.$emit('changeComponent', {component: 'base-component', id: 0});
+    this.$emit('changeComponent', { component: 'base-component', id: 0 });
     data  = new FormData()
   }
 
   getFormData(): FormData {
-    data.append('name', this.subjectName)
+    data.append('id', String(this.model.id))
+    data.append('name', this.model.name)
     data.append('file', this.file)
     return data
   }

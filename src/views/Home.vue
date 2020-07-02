@@ -26,25 +26,52 @@
     </h1> 
 
     <!-- MODULES -->
-    <div>
-      <subject-module class="animate__animated animate__fadeInLeftBig"/>
+    
+    <div class="animate__animated animate__fadeInLeftBig">
+      <transition 
+        name="custom-classes-transition"
+        enter-active-class="animate__animated animate__backInLeft"
+        leave-active-class="animate__animated animate__backOutLeft"
+      >
+        <component 
+          v-bind:is="component" 
+          @changeComponent="manage_component"
+          :id="id"></component>
+      </transition>
     </div>
-
+    
   </div>
 </template>
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator'
 import SubjectModule from '../modules/Subject.vue'
+import EvaluationModel from '../modules/Evaluation.vue'
 
 @Component({
   components: {
     'subject-module' : SubjectModule,
+    'evaluation-module' : EvaluationModel,
   }
 })
 export default class Home extends Vue {
-  protected currentStep: number = 1;
+  id: number = 0
+  currentStep: number = 1
+  component: string = 'subject-module'
 
+  manage_component(data: any) {
+    this.component = data.component
+    this.id = data.id
+    switch (data.component) {
+      case 'subject-module':
+        this.currentStep = 1
+        break;
+      case 'evaluation-module':
+        this.currentStep = 2
+        break;
+    }
+    this.component = data.component
+  }
 }
 
 </script>

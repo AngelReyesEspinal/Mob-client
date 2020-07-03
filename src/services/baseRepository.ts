@@ -12,6 +12,18 @@ export default class BaseRepository {
 
     /* Generic request */
 
+    getById(id: number) {
+        return this.axios.get(`${this.apiUrl}/${id}`)
+    }
+    
+    add(data: any) {
+        return this.axios.post(`${this.apiUrl}`, data)
+    }
+
+    edit(data: any) {
+        return this.axios.put(`${this.apiUrl}`, data)
+    }
+
     getAll() {
         return this.axios.get(`${this.apiUrl}`)
     }
@@ -36,5 +48,10 @@ export default class BaseRepository {
 
     getSubjectById(id: number) {
         return this.axios.get(`${this.apiUrl}/GetById/${id}`)
+    }
+
+    /* Evalation custom request*/
+    getEvaluationBySubjectId(id: number) {
+        return this.axios.get(`${this.apiUrl}/GetBySubjectId/${id}`)
     }
 }

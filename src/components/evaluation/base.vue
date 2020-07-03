@@ -11,76 +11,81 @@
     </div>
     <br/>
 
-    <div class="box effect5 flex" style="">
-      <div>
-        <span style="color: black"> klk</span>
-      </div>
-    </div>
+     <sui-table color="black" inverted>
+      <sui-table-header>
+        <sui-table-row>
+          <sui-table-header-cell>Nombre</sui-table-header-cell>
+          <sui-table-header-cell>Mostrar memes</sui-table-header-cell>
+          <sui-table-header-cell>Cantidad de preguntas</sui-table-header-cell>
+          <sui-table-header-cell>Acciones</sui-table-header-cell>
+        </sui-table-row>
+      </sui-table-header>
+      <sui-table-body>
+        <sui-table-row v-for="evaluation in evaluations" :key="evaluation.id" >
+          <sui-table-cell>{{ evaluation.name }}</sui-table-cell>
+          <sui-table-cell>{{ evaluation.showGifs ? 'Sí' : 'No' }}</sui-table-cell>
+          <sui-table-cell>{{ evaluation.questionQuantity }}</sui-table-cell>
+          <sui-table-cell>
+            <div>
 
+              <sui-button @click="manage_questions(evaluation.id)" color="green" inverted animated="vertical">
+                <sui-button-content hidden>Preguntas</sui-button-content>
+                <sui-button-content visible>
+                  <sui-icon name="add" />
+                </sui-button-content>
+              </sui-button>
 
-    <!-- <main>
-      <article  v-for="subject in subjects" :key="subject.id" class="postcard blue">
-        <img class="postcard__img" :src="subject.logo" height="215" alt="Image Title" />
-        <div class="postcard__text">
-          <h1 class="postcard__title blue">
-            <a href="#" @click="manage_evaluations(subject.id)">{{ subject.name }}</a>
-          </h1>
-          <span style="font-size: 20px;">
-            <b style="color: #95a5a6"> Secret key: </b> &nbsp; {{ subject.secretKey }}
-          </span>
-          <div class="postcard__bar"></div>
+              <sui-button @click="edit(evaluation.id)" color="blue" inverted animated="vertical">
+                <sui-button-content hidden>Editar</sui-button-content>
+                <sui-button-content visible>
+                  <sui-icon name="edit" />
+                </sui-button-content>
+              </sui-button>
 
-          <div>
-            <sui-button @click="operationDelete(subject.id, repository, loadData)" color="red" inverted animated="vertical">
-              <sui-button-content hidden>Eliminar</sui-button-content>
-              <sui-button-content visible>
-                <sui-icon name="delete" />
-              </sui-button-content>
-            </sui-button>
-
-            <sui-button @click="edit(subject.id)" color="blue" inverted animated="vertical">
-              <sui-button-content hidden>Editar</sui-button-content>
-              <sui-button-content visible>
-                <sui-icon name="edit" />
-              </sui-button-content>
-            </sui-button>
-          </div>
-
-        </div>
-      </article>
-    </main> -->
+              <sui-button @click="operationDelete(evaluation.id, repository, loadData)" color="red" inverted animated="vertical">
+                <sui-button-content hidden>Eliminar</sui-button-content>
+                <sui-button-content visible>
+                  <sui-icon name="delete" />
+                </sui-button-content>
+              </sui-button>
+            </div>
+          </sui-table-cell>
+        </sui-table-row>
+      </sui-table-body>
+    </sui-table>
     
   </div>
 </template>
 
 <script lang='ts'>
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import BaseRepository from "../../services/baseRepository";
 import Subject from "../../models/subject.model";
 import './css/base.scss';
 import BaseVue from '@/services/BaseVue.vue';
 import Swal from "sweetalert2";
+import Evaluation from "../../models/evaluation.model";
 
 @Component({})
 export default class Base extends BaseVue {
-  subjects: Array<Subject> = [];
-  repository: BaseRepository = new BaseRepository("Subject");
-  img: string = "";
+  @Prop({ default: 0}) areaId: number
+  evaluations: Array<Evaluation> = [];
+  repository: BaseRepository = new BaseRepository("Evaluation");
 
   mounted() {
     this.loadData();
   }
+  
+  manage_questions(id: number) {
+    this.$emit('changeParentComponent', {component: 'question-module', id: id})
+  }
 
   loadData() {
     this.$store.commit("setLoading", true);
-    this.repository.getByUserId(1).then((respone: any) => {
-      this.subjects = respone.data as Array<Subject>;
+    this.repository.getEvaluationBySubjectId(this.areaId).then((respone: any) => {
+      this.evaluations = respone.data as Array<Evaluation>;
     });
     this.$store.commit("setLoading", false);
-  }
-
-  manage_evaluations(id: number) {
-    alert(id);
   }
 
   edit(id: number) {

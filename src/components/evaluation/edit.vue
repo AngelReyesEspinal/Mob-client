@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form enctype="multipart/form-data" class="flex form">
+    <div class="flex form">
       <div>
         <template v-if="this.model">
             <sui-input
@@ -14,22 +14,19 @@
             />
         </template>
       </div>
-      <div>
-        <label for="file" id="selector">
-            <template v-if="this.model">
-                {{ file ? file.name : this.model.fileName}}
-            </template>
-            <template v-else>
-                Cargando...
-            </template>
-        </label>
-        <input type="file" id="file" @change="processFile($event)" hidden/>
+      <div v-if="this.model">
+        <span v-if="model.showGifs">
+          <sui-button size="big" basic color="teal" inverted  @click="model.showGifs = false">MOSTRAR MEMES (HABILITADO)</sui-button>
+        </span>
+        <span v-if="!model.showGifs">
+          <sui-button size="big" basic color="teal" inverted  @click="model.showGifs = true">MOSTRAR MEMES (DESHABILITADO)</sui-button>
+        </span>
       </div>
       <div class="flex end">
         <sui-button size="massive" basic color="grey" inverted @click=" () => { this.$emit('changeComponent', {component: 'base-component', id: 0}) } "> REGRESAR </sui-button>
-        <sui-button size="massive" basic color="teal" inverted type="submit" @click="send"> EDITAR </sui-button>
+        <sui-button size="massive" basic color="teal" inverted @click="send"> EDITAR </sui-button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -40,14 +37,15 @@ import { Component, Prop } from "vue-property-decorator"
 import BaseRepository from '../../services/baseRepository'
 import BaseVue from "../../services/BaseVue.vue"
 import Subject from "../../models/subject.model";
+import Evaluation from "../../models/evaluation.model";
 
 @Component({})
 export default class Edit extends BaseVue {
   @Prop({ default: 0}) id: number;
-  repository: BaseRepository = new BaseRepository("Subject")
+  repository: BaseRepository = new BaseRepository("Evaluation")
   subjectName: string = ''
   file: any = null
-  model: Subject = null
+  model: Evaluation = null
   open: boolean = false
 
   toggle() {
@@ -55,9 +53,9 @@ export default class Edit extends BaseVue {
   }
 
   async mounted() {
-    this.repository.getSubjectById(this.id).then((response: any) => {
+    this.repository.getById(this.id).then((response: any) => {
         if (response) {
-            this.model = response.data as Subject
+            this.model = response.data as Evaluation
             this.subjectName = this.model.name
         }
     });
@@ -70,20 +68,12 @@ export default class Edit extends BaseVue {
   async send() {
     let myEvent: any = event as any
     myEvent.preventDefault()
-    let subject = this.getFormData()
     this.$store.commit("setLoading", true)
-    await this.repository.editSubject(subject)
+    await this.repository.edit(this.model)
     this.$store.commit("setLoading", false)
     this.operationSuccess();
     this.$emit('changeComponent', { component: 'base-component', id: 0 });
     data  = new FormData()
-  }
-
-  getFormData(): FormData {
-    data.append('id', String(this.model.id))
-    data.append('name', this.model.name)
-    data.append('file', this.file)
-    return data
   }
 
 }

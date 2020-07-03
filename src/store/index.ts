@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     reload: false,
     loading: false,
+    areaId: 0
   },
   mutations: {
     setLoading (state, newValue) {

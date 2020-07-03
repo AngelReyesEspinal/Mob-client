@@ -4,7 +4,7 @@
     <!-- BREADCUMS -->
 
     <h1 class="animate__animated animate__fadeInLeftBig"> 
-      <span class="tab-item" :class="currentStep > 1 ? 'watched-tab': ''"  @click="currentStep = 1"> Áreas </span>
+      <span class="tab-item" :class="currentStep > 1 ? 'watched-tab': ''"  @click="() => {currentStep = 1, component='subject-module'}"> Áreas </span>
       <transition name="fade">
         <span v-if="currentStep >= 2">
           <span class="m-arrow"> <i class="fas fa-angle-right"></i> </span> 
@@ -36,7 +36,8 @@
         <component 
           v-bind:is="component" 
           @changeComponent="manage_component"
-          :id="id"></component>
+          :id="id"
+          :areaId="id"></component>
       </transition>
     </div>
     
@@ -68,6 +69,9 @@ export default class Home extends Vue {
         break;
       case 'evaluation-module':
         this.currentStep = 2
+        break;
+      case 'question-module':
+        this.currentStep = 3
         break;
     }
     this.component = data.component

@@ -11,7 +11,7 @@
     </div>
     <br/>
 
-    <main>
+    <main v-if="subjects">
       <article  v-for="subject in subjects" :key="subject.id" class="postcard blue">
         <img class="postcard__img" :src="subject.logo" height="215" alt="Image Title" />
         <div class="postcard__text">
@@ -64,12 +64,10 @@ export default class Base extends BaseVue {
     this.loadData();
   }
 
-  loadData() {
-    this.$store.commit("setLoading", true);
+  async loadData() {
     this.repository.getByUserId(1).then((respone: any) => {
       this.subjects = respone.data as Array<Subject>;
     });
-    this.$store.commit("setLoading", false);
   }
 
   manage_evaluations(id: number) {

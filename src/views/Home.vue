@@ -8,7 +8,7 @@
       <transition name="fade">
         <span v-if="currentStep >= 2">
           <span class="m-arrow"> <i class="fas fa-angle-right"></i> </span> 
-          <span class="tab-item" :class="currentStep > 2 ? 'watched-tab': ''" @click="currentStep = 2"> Evaluaciones </span>
+          <span class="tab-item" :class="currentStep > 2 ? 'watched-tab': ''" @click="showEvaluations"> Evaluaciones </span>
         </span>  
       </transition>
       <transition name="fade">
@@ -48,11 +48,13 @@
 import { Component, Vue } from 'vue-property-decorator'
 import SubjectModule from '../modules/Subject.vue'
 import EvaluationModel from '../modules/Evaluation.vue'
+import QuestionModule from '../modules/Question.vue'
 
 @Component({
   components: {
     'subject-module' : SubjectModule,
     'evaluation-module' : EvaluationModel,
+    'question-module': QuestionModule
   }
 })
 export default class Home extends Vue {
@@ -75,6 +77,12 @@ export default class Home extends Vue {
         break;
     }
     this.component = data.component
+  }
+
+  showEvaluations() {
+    this.id = this.$store.state.areaId
+    this.currentStep = 2
+    this.component = 'evaluation-module'
   }
 }
 

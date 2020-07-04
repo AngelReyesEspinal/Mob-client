@@ -28,13 +28,6 @@
           <sui-table-cell>
             <div>
 
-              <sui-button @click="manage_questions(evaluation.id)" color="green" inverted animated="vertical">
-                <sui-button-content hidden> ¿ ? </sui-button-content>
-                <sui-button-content visible>
-                  <sui-icon name="add" /> 
-                </sui-button-content>
-              </sui-button>
-
               <sui-button @click="edit(evaluation.id)" color="blue" inverted animated="vertical">
                 <sui-button-content hidden>Editar</sui-button-content>
                 <sui-button-content visible>

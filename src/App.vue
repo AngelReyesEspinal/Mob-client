@@ -57,4 +57,10 @@ export default class App extends Vue {
     height: 100px;
     font-size: 60px;
   }
+
+  
+  .not-too-big-but-big {
+    height: 80px;
+    font-size: 40px;
+  }
 </style>

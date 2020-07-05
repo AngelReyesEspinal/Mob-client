@@ -55,7 +55,7 @@ export default class Add extends BaseVue {
 
   async send() {
     this.model.subjectId = this.areaId;
-    this.model.userId = 1;
+    this.model.userId = this.$store.state.user.id;
     this.model.name = this.evaluationName;
     this.model.showGifs = this.showGifs;
     this.$store.commit("setLoading", true);

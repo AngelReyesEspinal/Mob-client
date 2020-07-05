@@ -11,7 +11,7 @@
     </div>
     <br/>
 
-    <main v-if="subjects">
+    <main v-if="subjects && subjects.length > 0">
       <article  v-for="subject in subjects" :key="subject.id" class="postcard blue">
         <img class="postcard__img" :src="subject.logo" height="215" alt="Image Title" />
         <div class="postcard__text">
@@ -42,6 +42,13 @@
         </div>
       </article>
     </main>
+    <div v-else>
+      <h1>
+        <span style="font-size: 40px;"> 
+          No se ha agregado áreas
+        </span>
+      </h1>
+    </div>
     
   </div>
 </template>
@@ -56,16 +63,17 @@ import Swal from "sweetalert2";
 
 @Component({})
 export default class Base extends BaseVue {
-  subjects: Array<Subject> = [];
+  subjects: Array<Subject> = null;
   repository: BaseRepository = new BaseRepository("Subject");
   img: string = "";
 
   mounted() {
-    this.loadData();
+    if (this.$store.state.user && this.$store.state.user.id)
+      this.loadData();
   }
 
   async loadData() {
-    this.repository.getByUserId(1).then((respone: any) => {
+    this.repository.getByUserId(this.$store.state.user.id).then((respone: any) => {
       this.subjects = respone.data as Array<Subject>;
     });
   }

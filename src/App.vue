@@ -63,4 +63,10 @@ export default class App extends Vue {
     height: 80px;
     font-size: 40px;
   }
+
+
+.ui.modal {
+  background-color: black!important;
+}
+
 </style>

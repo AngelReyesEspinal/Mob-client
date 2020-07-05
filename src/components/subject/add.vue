@@ -55,6 +55,7 @@ export default class Add extends BaseVue {
   }
 
   getFormData(): FormData {
+    data.append('userId', String(this.$store.state.user.id))
     data.append('name', this.subjectName)
     data.append('file', this.file)
     return data

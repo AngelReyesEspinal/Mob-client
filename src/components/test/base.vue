@@ -1,14 +1,24 @@
 <template>
   <div>
-    <div class="flex end">
-      <sui-button
-        size="massive"
-        basic
-        color="teal"
-        inverted
-        @click="() => { this.$emit('changeComponent',  {component: 'add-component', id: 0}) }"
-      >AGREGAR</sui-button>
-    </div>
+
+    <main v-if="subject">
+      <article  class="postcard blue">
+        <img class="postcard__img" :src="subject.logo" height="215" alt="Image Title" />
+        <div class="postcard__text">
+          <h1 class="postcard__title blue">
+            <a href="#">{{ subject.name }}</a>
+          </h1>
+          <span style="font-size: 20px;">
+            <b style="color: #95a5a6"> Secret key: </b> &nbsp; {{ subject.secretKey }}
+          </span>
+          <div class="postcard__bar"></div>
+        </div>
+      </article>
+    </main>
+
+    <h1 style="font-size: 40px;">
+      Evaluaciones
+    </h1>
     <br/>
 
      <sui-table v-if="evaluations && evaluations.length > 0" color="black" inverted>
@@ -28,26 +38,13 @@
           <sui-table-cell>
             <div>
 
-              <sui-button @click="manage_questions(evaluation.id)" color="green" inverted animated="vertical">
-                <sui-button-content hidden> ¿ ? </sui-button-content>
+              <sui-button @click="makeEvaluation(evaluation.id)" color="blue" inverted animated="vertical">
+                <sui-button-content hidden>Realizar</sui-button-content>
                 <sui-button-content visible>
-                  <sui-icon name="add" /> 
+                  <sui-icon name="eye" />
                 </sui-button-content>
               </sui-button>
 
-              <sui-button @click="edit(evaluation.id)" color="blue" inverted animated="vertical">
-                <sui-button-content hidden>Editar</sui-button-content>
-                <sui-button-content visible>
-                  <sui-icon name="edit" />
-                </sui-button-content>
-              </sui-button>
-
-              <sui-button @click="operationDelete(evaluation.id, repository, loadData)" color="red" inverted animated="vertical">
-                <sui-button-content hidden>Eliminar</sui-button-content>
-                <sui-button-content visible>
-                  <sui-icon name="delete" />
-                </sui-button-content>
-              </sui-button>
             </div>
           </sui-table-cell>
         </sui-table-row>
@@ -60,7 +57,6 @@
         </span>
       </h1>
     </div>
-    
   </div>
 </template>
 
@@ -75,10 +71,10 @@ import Evaluation from "../../models/evaluation.model";
 
 @Component({})
 export default class Base extends BaseVue {
-  @Prop({ default: 0}) areaId: number
   evaluations: Array<Evaluation> = [];
   repository: BaseRepository = new BaseRepository("Evaluation");
-
+  repositorySubject: BaseRepository = new BaseRepository("Subject");
+  subject: Subject = null;
   mounted() {
     this.loadData();
   }
@@ -88,13 +84,17 @@ export default class Base extends BaseVue {
   }
 
   loadData() {
-    this.repository.getEvaluationBySubjectId(this.areaId).then((respone: any) => {
+    this.repository.getEvaluationBySubjectSecretKey(this.$store.state.secretKey).then((respone: any) => {
       this.evaluations = respone.data as Array<Evaluation>;
+    });
+
+    this.repositorySubject.getEvaluationBySubjectSecretKey(this.$store.state.secretKey).then((respone: any) => {
+      this.subject = respone.data as Subject;
     });
   }
 
-  edit(id: number) {
-    this.$emit('changeComponent', {component: 'edit-component', id: id})
+  makeEvaluation(id: number) {
+    this.$emit('changeComponent', {component: 'question-component', id: id})
   }
 }
 </script>

@@ -8,7 +8,9 @@ export default new Vuex.Store({
     reload: false,
     loading: false,
     areaId: 0,
-    evaluationId: 0
+    evaluationId: 0,
+    user: null,
+    secretKey: null,
   },
   mutations: {
     setLoading (state, newValue) {

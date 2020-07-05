@@ -37,7 +37,8 @@
           v-bind:is="component" 
           @changeComponent="manage_component"
           :id="id"
-          :areaId="id"></component>
+          :areaId="id"
+          :evaluationId="id"></component>
       </transition>
     </div>
     
@@ -61,6 +62,11 @@ export default class Home extends Vue {
   id: number = 0
   currentStep: number = 1
   component: string = 'subject-module'
+
+  mounted() {
+    if (!this.$store.state.user)
+      this.$router.push('/Login'); 
+  }
 
   manage_component(data: any) {
     this.component = data.component

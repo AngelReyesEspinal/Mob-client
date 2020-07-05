@@ -46,12 +46,51 @@ export default class BaseRepository {
         return this.axios.post(`${this.apiUrl}/updateSubject`, data)
     }
 
-    getSubjectById(id: number) {
+    getByIdCustom(id: number) {
         return this.axios.get(`${this.apiUrl}/GetById/${id}`)
     }
 
     /* Evalation custom request*/
+
     getEvaluationBySubjectId(id: number) {
         return this.axios.get(`${this.apiUrl}/GetBySubjectId/${id}`)
+    }
+
+    getEvaluationBySubjectSecretKey(key: string) {
+        return this.axios.get(`${this.apiUrl}/GetBySecretKey/${key}`)
+    }
+
+    /* Question custom request */
+
+    addQuestion(data: any) {
+        return this.axios.post(`${this.apiUrl}/question`, data)
+    }
+
+    addAnswers(data: any) {
+        return this.axios.post(`${this.apiUrl}/answers`, data)
+    }
+
+    getQuestionByEvaluationId(id: number) {
+        return this.axios.get(`${this.apiUrl}/GetByEvaluationId/${id}`)
+    }
+
+    /* user */
+
+    valdiateUser(data: any) {
+        return this.axios.post(`${this.apiUrl}/validate`, data)
+    }
+
+    createIfNotExist(data: any) {
+        return this.axios.post(`${this.apiUrl}/CreateIfNotExist`, data)
+    }
+
+    /* test */
+
+    validateKey(key: string) {
+        return this.axios.get(`${this.apiUrl}/validateKey/${key}`)
+    }
+
+    GetByIdFull(id: number) {
+        return this.axios.get(`${this.apiUrl}/GetByIdFull/${id}`)
     }
 }

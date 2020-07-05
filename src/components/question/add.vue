@@ -39,7 +39,7 @@
       <div class="flex">
         <div style="width: 50%">
           <sui-input
-            :error="!isValid"
+            :error="!isValidAnswer"
             class=" input-custom-width not-too-big-but-big"
             size="massive"
             placeholder="Respuesta..."
@@ -47,12 +47,17 @@
             v-model="answer"
           />
         </div>
-        <span v-if="showGifs">
-          <sui-button size="big" basic color="teal" inverted  @click="showGifs = false">ES CORRECTA</sui-button>
-        </span>
-        <span v-if="!showGifs">
-          <sui-button size="big" basic color="teal" inverted  @click="showGifs = true">NO ES CORRECTA</sui-button>
-        </span>
+        <div style="width: 30%">
+          <span v-if="isCorrect">
+            <sui-button size="big" basic color="teal" inverted  @click="isCorrect = false" > ES CORRECTA <span style="margin-left: 10px!important;"> <i class="fas fa-thumbs-up"></i> </span> </sui-button>
+          </span>
+          <span v-if="!isCorrect">
+            <sui-button size="big" basic color="teal" inverted  @click="isCorrect = true" > NO ES CORRECTA  <span style="margin-left: 10px!important;"><i class="fas fa-thumbs-down"></i></span></sui-button>
+          </span>
+        </div>
+        <div style="width: 30%">
+          <sui-button size="big" basic color="teal" inverted icon="add" @click="addAnswer"> AGREGAR RESPUESTA </sui-button>
+        </div>
       </div>
 
       <template v-if="answers.length > 0">
@@ -61,15 +66,16 @@
             <sui-table-row>
               <sui-table-header-cell>Respuesta posible</sui-table-header-cell>
               <sui-table-header-cell>Es correcta</sui-table-header-cell>
+              <sui-table-header-cell>Acciones</sui-table-header-cell>
             </sui-table-row>
           </sui-table-header>
           <sui-table-body>
-            <sui-table-row v-for="answer in answers" :key="answer.id">
-              <sui-table-cell></sui-table-cell>
-              <sui-table-cell></sui-table-cell>
+            <sui-table-row v-for="(answer, index) in answers" :key="index">
+              <sui-table-cell> {{ answer.title }} </sui-table-cell>
+              <sui-table-cell> {{ answer.isCorrect ? 'Sí' : 'No' }} </sui-table-cell>
               <sui-table-cell>
                 <div>
-                  <sui-button color="red" inverted animated="vertical">
+                  <sui-button @click="deleteAnswer(index)" color="red" inverted animated="vertical">
                     <sui-button-content hidden>Eliminar</sui-button-content>
                     <sui-button-content visible>
                       <sui-icon name="delete" />
@@ -80,6 +86,7 @@
             </sui-table-row>
           </sui-table-body>
         </sui-table>
+        <br/>
       </template>
       <template v-else>
         <span style="padding: 10px; font-size: 25px;">No se ha agregado ninguna respuesta</span>
@@ -106,36 +113,70 @@ import { Component, Prop } from "vue-property-decorator";
 import BaseRepository from "../../services/baseRepository";
 import BaseVue from "../../services/BaseVue.vue";
 import Evaluation from "../../models/evaluation.model";
+import QuestionAnswerOption from "../../models/questionAnswerOption.model";
+import Question from "../../models/question.model";
 
 @Component({})
 export default class Add extends BaseVue {
-  @Prop({ default: 0 }) areaId: number;
+  @Prop({ default: 0 }) evaluationId: number;
   id: Number = 0;
-  repository: BaseRepository = new BaseRepository("Evaluation");
+  repository: BaseRepository = new BaseRepository("Question");
   questionName: string = "";
   pista: string = "";
   answer: string = "";
   file: any = null;
-  showGifs: boolean = false;
-  model: Evaluation = new Evaluation();
-  answers: any = [];
-
+  isCorrect: boolean = false;
+  answers: Array<QuestionAnswerOption> = [];
+  isValidAnswer: boolean = true;
 
   processFile(event: any) {
     this.file = event.target.files[0];
   }
 
   async send() {
-    this.model.subjectId = this.areaId;
-    this.model.userId = 1;
-    this.model.name = this.questionName;
-    this.model.showGifs = this.showGifs;
+    let data = this.getFormData()
     this.$store.commit("setLoading", true);
-    await this.repository.add(this.model);
+    let httpResponse = await this.repository.addQuestion(data);
+    let createdQuestion = httpResponse.data as Question;
+    createdQuestion.questionAnswerOptions = this.answers
+    await this.repository.addAnswers(createdQuestion);
     this.$store.commit("setLoading", false);
     this.operationSuccess();
     this.$emit("changeComponent", { component: "base-component", id: 0 });
+    data  = new FormData()
   }
+
+  addAnswer() {
+    if (this.answer) {
+      let answer = new QuestionAnswerOption()
+      answer.isCorrect = this.isCorrect
+      answer.title = this.answer
+      this.answers.push(answer)
+      this.cleanAnswer()
+    } else 
+      this.isValidAnswer = false 
+  }
+
+  cleanAnswer() {
+    this.isCorrect = false
+    this.answer = ''
+    this.isValidAnswer = true
+  }
+
+  deleteAnswer(index: number) {
+    this.answers.splice(index, 1)
+  }
+
+  getFormData(): FormData {
+    data  = new FormData()
+    data.append('userId', String(this.$store.state.user.id))
+    data.append('name', this.questionName)
+    data.append('pista', this.pista)
+    data.append('file', this.file)
+    data.append('evaluationId', String(this.evaluationId))
+    return data
+  }
+
 }
 </script>
 

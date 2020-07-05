@@ -11,22 +11,36 @@
     </div>
     <br/>
 
+      <template v-if="questions && questions.length > 0">
      <sui-table color="black" inverted>
       <sui-table-header>
         <sui-table-row>
           <sui-table-header-cell>Nombre</sui-table-header-cell>
-          <sui-table-header-cell>Mostrar memes</sui-table-header-cell>
-          <sui-table-header-cell>Cantidad de preguntas</sui-table-header-cell>
+          <sui-table-header-cell>Comodín</sui-table-header-cell>
+          <sui-table-header-cell>Respuesta correcta</sui-table-header-cell>
           <sui-table-header-cell>Acciones</sui-table-header-cell>
         </sui-table-row>
       </sui-table-header>
       <sui-table-body>
-        <sui-table-row v-for="evaluation in evaluations" :key="evaluation.id" >
+        <sui-table-row v-for="evaluation in questions" :key="evaluation.id" >
           <sui-table-cell>{{ evaluation.name }}</sui-table-cell>
-          <sui-table-cell>{{ evaluation.showGifs ? 'Sí' : 'No' }}</sui-table-cell>
-          <sui-table-cell>{{ evaluation.questionQuantity }}</sui-table-cell>
+          <sui-table-cell>{{ evaluation.wildcard }}</sui-table-cell>
+          <sui-table-cell>
+            <div v-for="answer in evaluation.questionAnswerOptions" :key="answer.id">
+             <template v-if="answer.isCorrect">
+                <i class="fas fa-thumbs-up" ></i> <span style="margin-left: 10px;"> </span> {{ answer.title }}
+             </template>
+            </div>
+          </sui-table-cell>
           <sui-table-cell>
             <div>
+              
+              <sui-button @click="ver(evaluation)" color="orange" inverted animated="vertical">
+                <sui-button-content hidden>Imagen</sui-button-content>
+                <sui-button-content visible>
+                  <sui-icon name="eye" />
+                </sui-button-content>
+              </sui-button>
 
               <sui-button @click="edit(evaluation.id)" color="blue" inverted animated="vertical">
                 <sui-button-content hidden>Editar</sui-button-content>
@@ -41,12 +55,26 @@
                   <sui-icon name="delete" />
                 </sui-button-content>
               </sui-button>
+
             </div>
           </sui-table-cell>
         </sui-table-row>
       </sui-table-body>
     </sui-table>
+    </template>
+    <template v-else>
+      <span style="padding: 10px; font-size: 35px;">No se ha agregado preguntas</span>
+    </template>
     
+
+     <sui-modal style="background-color: black;" v-model="open">
+       <center>
+        <sui-image
+          :src="currentImg"
+        />
+       </center>
+    </sui-modal>
+
   </div>
 </template>
 
@@ -58,15 +86,23 @@ import './css/base.scss';
 import BaseVue from '@/services/BaseVue.vue';
 import Swal from "sweetalert2";
 import Evaluation from "../../models/evaluation.model";
+import Question from "../../models/question.model";
 
 @Component({})
 export default class Base extends BaseVue {
-  @Prop({ default: 0}) areaId: number
-  evaluations: Array<Evaluation> = [];
-  repository: BaseRepository = new BaseRepository("Evaluation");
+  @Prop({ default: 0}) evaluationId: number
+  questions: Array<Question> = [];
+  repository: BaseRepository = new BaseRepository("Question");
+  open: boolean = false;
+  currentImg: string = '';
 
   mounted() {
     this.loadData();
+  }
+
+  ver(data: any) {
+    this.currentImg = data.img;
+    this.open = true;
   }
   
   manage_questions(id: number) {
@@ -74,8 +110,8 @@ export default class Base extends BaseVue {
   }
 
   loadData() {
-    this.repository.getEvaluationBySubjectId(this.areaId).then((respone: any) => {
-      this.evaluations = respone.data as Array<Evaluation>;
+    this.repository.getQuestionByEvaluationId(this.evaluationId).then((respone: any) => {
+      this.questions = respone.data as Array<Question>;
     });
   }
 

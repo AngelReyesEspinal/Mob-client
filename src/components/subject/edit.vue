@@ -55,7 +55,7 @@ export default class Edit extends BaseVue {
   }
 
   async mounted() {
-    this.repository.getSubjectById(this.id).then((response: any) => {
+    this.repository.getByIdCustom(this.id).then((response: any) => {
         if (response) {
             this.model = response.data as Subject
             this.subjectName = this.model.name

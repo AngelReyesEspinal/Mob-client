@@ -10,6 +10,11 @@ export default class BaseRepository {
         this.apiUrl = `https://localhost:44340/api/${controller}`
     }
 
+    /* GIFS GET */
+    getGifs(url: string) {
+        return this.axios.get(`${url}`)
+    }
+
     /* Generic request */
 
     getById(id: number) {

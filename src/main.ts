@@ -9,7 +9,9 @@ import 'semantic-ui-css/semantic.min.css';
 import "animate.css/source/animate.css";
 
 Vue.config.productionTip = false
+
 Vue.use(SuiVue);
+
 
 new Vue({
   router,

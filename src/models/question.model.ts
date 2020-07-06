@@ -9,4 +9,5 @@ export default class Question {
     userId: number = 0;
     questionAnswerOptions: Array<QuestionAnswerOption> = [];
     img: any = null;
+    uiIndex: number = 0;
 }

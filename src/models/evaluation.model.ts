@@ -6,5 +6,6 @@ export default class Evaluation {
     name: string | null = null;
     subjectId: number = 0;
     showGifs: boolean = false;
-    questions: Array<Question> = []
+    questionsFrontEnd: Array<Question> = []
+    questionQuantity: number | null = 0
 }

@@ -68,6 +68,7 @@ export default class Edit extends BaseVue {
   }
 
   async send() {
+    if(this.model.name) {
     let myEvent: any = event as any
     myEvent.preventDefault()
     let subject = this.getFormData()
@@ -77,6 +78,9 @@ export default class Edit extends BaseVue {
     this.operationSuccess();
     this.$emit('changeComponent', { component: 'base-component', id: 0 });
     data  = new FormData()
+    } else {
+      this.operationNotAllowed();
+    }
   }
 
   getFormData(): FormData {

@@ -148,14 +148,18 @@ export default class Add extends BaseVue {
 
 
   async send() {
-    let data = this.getFormData()
-    this.$store.commit("setLoading", true);
-    await this.repository.editSubject(data);
-    await this.repository.addAnswers(this.model);
-    this.$store.commit("setLoading", false);
-    this.operationSuccess();
-    this.$emit("changeComponent", { component: "base-component", id: 0 });
-    data  = new FormData()
+    if ( this.model.name && this.model.wildcard && this.model.questionAnswerOptions.length > 0) { 
+      let data = this.getFormData()
+      this.$store.commit("setLoading", true);
+      await this.repository.editSubject(data);
+      await this.repository.addAnswers(this.model);
+      this.$store.commit("setLoading", false);
+      this.operationSuccess();
+      this.$emit("changeComponent", { component: "base-component", id: 0 });
+      data  = new FormData()
+    } else {
+      this.operationNotAllowed();
+    }
   }
 
   addAnswer() {

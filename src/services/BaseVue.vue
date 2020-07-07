@@ -7,6 +7,20 @@ export default class BaseVue extends Vue {
   protected swal: any = Swal;
   protected isValid: boolean = true;
 
+  protected operationNotAllowed() {
+    this.swal.fire({
+      title: "¡Atención!",
+      text: "¡Debe completar todos los campos!",
+      icon: "warning",
+      showClass: {
+        popup: "animate__animated animate__backInLeft"
+      },
+      hideClass: {
+        popup: "animate__animated animate__backOutLeft"
+      }
+    });
+  }
+
   protected operationSuccess() {
     this.swal.fire({
       title: "¡Muy bien!",

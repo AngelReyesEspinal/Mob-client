@@ -54,15 +54,19 @@ export default class Add extends BaseVue {
   }
 
   async send() {
-    this.model.subjectId = this.areaId;
-    this.model.userId = this.$store.state.user.id;
-    this.model.name = this.evaluationName;
-    this.model.showGifs = this.showGifs;
-    this.$store.commit("setLoading", true);
-    await this.repository.add(this.model)
-    this.$store.commit("setLoading", false);
-    this.operationSuccess();
-    this.$emit("changeComponent", { component: "base-component", id: 0 });
+    if (this.evaluationName) {
+      this.model.subjectId = this.areaId;
+      this.model.userId = this.$store.state.user.id;
+      this.model.name = this.evaluationName;
+      this.model.showGifs = this.showGifs;
+      this.$store.commit("setLoading", true);
+      await this.repository.add(this.model)
+      this.$store.commit("setLoading", false);
+      this.operationSuccess();
+      this.$emit("changeComponent", { component: "base-component", id: 0 });
+    } else {
+      this.operationNotAllowed();
+    }
   }
 }
 </script>

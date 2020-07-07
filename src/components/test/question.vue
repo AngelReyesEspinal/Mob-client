@@ -62,9 +62,27 @@
       </center>
       <br/>
       <br/>
-      <span style="font-size: 40px;">RESPUESTAS <span style="color: #16a085; margin-right: 100px;"> CORRECTAS </span> {{ goodAnswers }} / {{ model.questionQuantity }}</span>  <br/>
+      <span style="font-size: 40px;">RESPUESTAS <span style="color: #16a085; margin-right: 100px;"> CORRECTAS <i class="far fa-laugh-beam"></i> </span> {{ goodAnswers }} / {{ model.questionQuantity }}</span>  <br/>
       <br/>
-      <span style="font-size: 40px;">RESPUESTAS <span style="color: #c0392b; margin-right: 60px;"> INCORRECTAS </span> {{ badAnswers }} / {{ model.questionQuantity }} </span>
+      <span style="font-size: 40px;">RESPUESTAS <span style="color: #c0392b; margin-right: 60px;"> INCORRECTAS <i class="far fa-angry"></i> </span> {{ badAnswers }} / {{ model.questionQuantity }} </span>
+   
+      <br/>
+      <br/>
+      <div v-if="myResults.length > 0 && myResults.some(x => !x.isCorrect)">
+        <span style="font-size: 40px; color: #636e72"> ¿En qué falle? <i class="fas fa-sad-tear"></i> </span> 
+        <div v-for="badResult in myResults.filter(x => !x.isCorrect)" :key="badResult.id">
+          <br/>
+          Mi respuesta <span style="color: #c0392b;"> {{ badResult.myAsnwer }} </span> <i class="fas fa-long-arrow-alt-right"></i> respuesta correcta: <span style="color: #16a085;"> {{ badResult.correctAnswer }} <i class="fas fa-check"></i> </span>
+        </div>
+      </div>
+      <div v-else>
+        <br/>
+        <br/>
+        <center>
+          <span style="font-size: 60px; color: #16a085;"> ¡FELICIDADES CONTESTASTE TODAS BIEN CRACK <i class="far fa-grin-tongue-wink"></i> ! </span>
+        </center>
+      </div>
+
     </h1>
 
     <sui-modal v-model="open">
